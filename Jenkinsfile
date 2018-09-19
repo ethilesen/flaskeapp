@@ -16,5 +16,5 @@ node {
         sh "kubectl rollout status deployment/flasekeapp"
 }
 }
-}
+
 
