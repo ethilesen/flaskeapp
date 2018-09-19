@@ -1,4 +1,5 @@
 node {
+    def app
     dir("/root/"){
     checkout scm
 
