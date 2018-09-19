@@ -2,23 +2,18 @@ node {
     dir("/root/"){
     checkout scm
 
-    env.DOCKER_API_VERSION="1.23"
-    appName = "default/flask-app"
-    registryHost = "mycluster.icp:8500/"
-    imageName = "${registryHost}${appName}:${env.BUILD_ID}"
-    env.BUILDIMG=imageName
-    docker.withRegistry('https://mycluster.icp:8500/', 'docker'){
-    stage "Build"
+    stage('Build image') {
+        /* This builds the actual image; synonymous to
+         * docker build on the command line */
 
-        def pcImg = docker.build("mycluster.icp:8500/default/flask-app:${env.BUILD_ID}", "-f Dockerfile.ppc64le .")
-        sh "cp /root/.dockercfg ${HOME}/.dockercfg"
-        pcImg.push()
+        app = docker.build("ethilesen/falskeapp")
+    }
 
     input 'Do you want to proceed with Deployment?'
     stage "Deploy"
 
-        sh "kubectl set image deployment/demoapp-demochart demochart=${imageName}"
-        sh "kubectl rollout status deployment/demoapp-demochart"
+        sh "kubectl set image deployment/flasekeapp"
+        sh "kubectl rollout status deployment/flasekeapp"
 }
 }
 }
